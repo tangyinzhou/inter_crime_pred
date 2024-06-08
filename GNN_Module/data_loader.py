@@ -24,6 +24,7 @@ def load_graph(dataset: str):
         src_nodes.append(index1)
         dst_nodes.append(index2)
     g_dgl = dgl.graph((torch.tensor(src_nodes), torch.tensor(dst_nodes)))
+    g_dgl = dgl.add_self_loop(g_dgl)
     return g_dgl
 
 
@@ -35,8 +36,8 @@ class CustomDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        feature = self.data.iloc[idx][:-1]
-        label = self.data.iloc[idx][-1]
+        feature = self.data[idx][:-1]
+        label = self.data[idx][-1]
 
         return feature, label
 
