@@ -1,0 +1,201 @@
+Community1,Community2
+Western Addition,Presidio Heights
+Western Addition,Pacific Heights
+Western Addition,Lone Mountain/USF
+Western Addition,Nob Hill
+Western Addition,Tenderloin
+Western Addition,Japantown
+Western Addition,Hayes Valley
+West of Twin Peaks,Twin Peaks
+West of Twin Peaks,Outer Mission
+West of Twin Peaks,Sunset/Parkside
+West of Twin Peaks,Oceanview/Merced/Ingleside
+West of Twin Peaks,Lakeshore
+West of Twin Peaks,Inner Sunset
+West of Twin Peaks,Glen Park
+Visitacion Valley,Portola
+Visitacion Valley,McLaren Park
+Visitacion Valley,Excelsior
+Visitacion Valley,Bayview Hunters Point
+Twin Peaks,West of Twin Peaks
+Twin Peaks,Noe Valley
+Twin Peaks,Inner Sunset
+Twin Peaks,Glen Park
+Twin Peaks,Castro/Upper Market
+South of Market,Mission Bay
+South of Market,Mission
+South of Market,Tenderloin
+South of Market,Financial District/South Beach
+Presidio Heights,Western Addition
+Presidio Heights,Presidio
+Presidio Heights,Pacific Heights
+Presidio Heights,Lone Mountain/USF
+Presidio Heights,Japantown
+Presidio Heights,Inner Richmond
+Presidio,Presidio Heights
+Presidio,Pacific Heights
+Presidio,Seacliff
+Presidio,Marina
+Presidio,Inner Richmond
+Potrero Hill,Mission Bay
+Potrero Hill,Mission
+Potrero Hill,Bernal Heights
+Potrero Hill,Bayview Hunters Point
+Portola,Visitacion Valley
+Portola,McLaren Park
+Portola,Excelsior
+Portola,Bernal Heights
+Portola,Bayview Hunters Point
+Pacific Heights,Western Addition
+Pacific Heights,Presidio Heights
+Pacific Heights,Presidio
+Pacific Heights,Nob Hill
+Pacific Heights,Russian Hill
+Pacific Heights,Marina
+Pacific Heights,Japantown
+Outer Richmond,Lincoln Park
+Outer Richmond,Seacliff
+Outer Richmond,Golden Gate Park
+Outer Richmond,Inner Richmond
+Outer Mission,West of Twin Peaks
+Outer Mission,Oceanview/Merced/Ingleside
+Outer Mission,Glen Park
+Outer Mission,Excelsior
+Outer Mission,Bernal Heights
+Sunset/Parkside,West of Twin Peaks
+Sunset/Parkside,Lakeshore
+Sunset/Parkside,Inner Sunset
+Sunset/Parkside,Golden Gate Park
+Oceanview/Merced/Ingleside,West of Twin Peaks
+Oceanview/Merced/Ingleside,Outer Mission
+Oceanview/Merced/Ingleside,Lakeshore
+North Beach,Russian Hill
+North Beach,Financial District/South Beach
+North Beach,Chinatown
+Noe Valley,Twin Peaks
+Noe Valley,Mission
+Noe Valley,Glen Park
+Noe Valley,Castro/Upper Market
+Noe Valley,Bernal Heights
+Lone Mountain/USF,Western Addition
+Lone Mountain/USF,Presidio Heights
+Lone Mountain/USF,Japantown
+Lone Mountain/USF,Hayes Valley
+Lone Mountain/USF,Golden Gate Park
+Lone Mountain/USF,Inner Richmond
+Lincoln Park,Outer Richmond
+Lincoln Park,Seacliff
+Seacliff,Presidio
+Seacliff,Outer Richmond
+Seacliff,Lincoln Park
+Seacliff,Inner Richmond
+Nob Hill,Western Addition
+Nob Hill,Pacific Heights
+Nob Hill,Russian Hill
+Nob Hill,Tenderloin
+Nob Hill,Financial District/South Beach
+Nob Hill,Chinatown
+Mission Bay,South of Market
+Mission Bay,Potrero Hill
+Mission Bay,Mission
+Mission Bay,Financial District/South Beach
+Mission,South of Market
+Mission,Potrero Hill
+Mission,Noe Valley
+Mission,Mission Bay
+Mission,Tenderloin
+Mission,Hayes Valley
+Mission,Castro/Upper Market
+Mission,Bernal Heights
+Russian Hill,Pacific Heights
+Russian Hill,North Beach
+Russian Hill,Nob Hill
+Russian Hill,Marina
+Russian Hill,Chinatown
+Marina,Presidio
+Marina,Pacific Heights
+Marina,Russian Hill
+Lakeshore,West of Twin Peaks
+Lakeshore,Sunset/Parkside
+Lakeshore,Oceanview/Merced/Ingleside
+Tenderloin,Western Addition
+Tenderloin,South of Market
+Tenderloin,Nob Hill
+Tenderloin,Mission
+Tenderloin,Hayes Valley
+Tenderloin,Financial District/South Beach
+McLaren Park,Visitacion Valley
+McLaren Park,Portola
+McLaren Park,Excelsior
+Japantown,Western Addition
+Japantown,Presidio Heights
+Japantown,Pacific Heights
+Japantown,Lone Mountain/USF
+Inner Sunset,West of Twin Peaks
+Inner Sunset,Twin Peaks
+Inner Sunset,Sunset/Parkside
+Inner Sunset,Haight Ashbury
+Inner Sunset,Golden Gate Park
+Inner Sunset,Castro/Upper Market
+Hayes Valley,Western Addition
+Hayes Valley,Lone Mountain/USF
+Hayes Valley,Mission
+Hayes Valley,Tenderloin
+Hayes Valley,Haight Ashbury
+Hayes Valley,Golden Gate Park
+Hayes Valley,Castro/Upper Market
+Haight Ashbury,Inner Sunset
+Haight Ashbury,Hayes Valley
+Haight Ashbury,Golden Gate Park
+Haight Ashbury,Castro/Upper Market
+Golden Gate Park,Outer Richmond
+Golden Gate Park,Sunset/Parkside
+Golden Gate Park,Lone Mountain/USF
+Golden Gate Park,Inner Sunset
+Golden Gate Park,Hayes Valley
+Golden Gate Park,Haight Ashbury
+Golden Gate Park,Inner Richmond
+Inner Richmond,Presidio Heights
+Inner Richmond,Presidio
+Inner Richmond,Outer Richmond
+Inner Richmond,Lone Mountain/USF
+Inner Richmond,Seacliff
+Inner Richmond,Golden Gate Park
+Glen Park,West of Twin Peaks
+Glen Park,Twin Peaks
+Glen Park,Outer Mission
+Glen Park,Noe Valley
+Glen Park,Bernal Heights
+Financial District/South Beach,South of Market
+Financial District/South Beach,North Beach
+Financial District/South Beach,Nob Hill
+Financial District/South Beach,Mission Bay
+Financial District/South Beach,Tenderloin
+Financial District/South Beach,Chinatown
+Excelsior,Visitacion Valley
+Excelsior,Portola
+Excelsior,Outer Mission
+Excelsior,McLaren Park
+Excelsior,Bernal Heights
+Chinatown,North Beach
+Chinatown,Nob Hill
+Chinatown,Russian Hill
+Chinatown,Financial District/South Beach
+Castro/Upper Market,Twin Peaks
+Castro/Upper Market,Noe Valley
+Castro/Upper Market,Mission
+Castro/Upper Market,Inner Sunset
+Castro/Upper Market,Hayes Valley
+Castro/Upper Market,Haight Ashbury
+Bernal Heights,Potrero Hill
+Bernal Heights,Portola
+Bernal Heights,Outer Mission
+Bernal Heights,Noe Valley
+Bernal Heights,Mission
+Bernal Heights,Glen Park
+Bernal Heights,Excelsior
+Bernal Heights,Bayview Hunters Point
+Bayview Hunters Point,Visitacion Valley
+Bayview Hunters Point,Potrero Hill
+Bayview Hunters Point,Portola
+Bayview Hunters Point,Bernal Heights
