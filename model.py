@@ -2,6 +2,7 @@ import dgl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from dgl.nn import GraphConv
 
 
 class GCN(nn.Module):
@@ -23,68 +24,59 @@ class GCN(nn.Module):
 
 
 class TGCNLayer(nn.Module):
-    def __init__(self, in_feats, out_feats, K):
+    def __init__(self, in_feats, out_feats):
         super(TGCNLayer, self).__init__()
-        self.in_feats = in_feats
-        self.out_feats = out_feats
-        self.K = K
-        self.weight = nn.Parameter(torch.Tensor(K, in_feats, out_feats))
-        self.bias = nn.Parameter(torch.Tensor(out_feats))
-        self.reset_parameters()
+        self.graph_conv = GraphConv(in_feats, out_feats)
 
-    def reset_parameters(self):
-        nn.init.xavier_uniform_(self.weight)
-        nn.init.zeros_(self.bias)
-
-    def forward(self, g, h):
-        def chebyshev_polynomials(x, k):
-            if k == 0:
-                return torch.ones(size=x.size(0))
-            elif k == 1:
-                return x
-            else:
-                x0 = torch.ones(size=x.size(0))
-                x1 = x
-                for i in range(2, k+1):
-                    x_next = 2 * x1.matmul(x) - x0
-                    x0, x1 = x1, x_next
-                return x_next
-
-        # Compute the Chebyshev polynomials up to K for the normalized adjacency matrix.
-        g = dgl.add_self_loop(g)
-        adj = g.adjacency_matrix().cuda() if h.is_cuda else g.adjacency_matrix()
-        deg = torch.pow(g.in_degrees().float(), -0.5)
-        deg = torch.where(deg == float('inf'), torch.tensor(0.0).cuda() if h.is_cuda else torch.tensor(0.0), deg)
-        norm_adj = deg.unsqueeze(1) * adj * deg.unsqueeze(0)
-        A_k = chebyshev_polynomials(norm_adj, self.K)
-
-        h = torch.matmul(A_k, h)
-        h = torch.matmul(h, self.weight) + self.bias
-        h = F.relu(h)
-
+    def forward(self, g, inputs, hidden_state):
+        # 将输入和隐藏状态连接起来
+        x = torch.cat([inputs, hidden_state], dim=-1)
+        # 应用图卷积
+        h = self.graph_conv(g, x)
         return h
 
+
+class TGCNCell(nn.Module):
+    def __init__(self, input_dim, hidden_dim):
+        super(TGCNCell, self).__init__()
+        self.input_dim = input_dim
+        self.hidden_dim = hidden_dim
+        self.tgcn_layer = TGCNLayer(input_dim + hidden_dim, hidden_dim * 2)
+        self.tgcn_update = TGCNLayer(input_dim + hidden_dim, hidden_dim)
+
+    def forward(self, g, inputs, hidden_state):
+        # 通过图卷积层计算候选隐藏状态
+        concatenated = self.tgcn_layer(g, inputs, hidden_state)
+        # 分离重置门和更新门
+        resetgate, updategate = torch.split(concatenated, self.hidden_dim, dim=-1)
+        resetgate = torch.sigmoid(resetgate)
+        updategate = torch.sigmoid(updategate)
+        # 计算新的候选隐藏状态
+        new_cand = self.tgcn_update(inputs, resetgate * hidden_state)
+        # 计算新的隐藏状态
+        new_hidden_state = updategate * hidden_state + (1 - updategate) * torch.tanh(
+            new_cand
+        )
+        return new_hidden_state, new_hidden_state
+
+
 class TGCN(nn.Module):
-    def __init__(self, num_nodes, history_length, feature_num, num_filters, K, num_layers, output_feature):
+    def __init__(self, hidden_dim):
         super(TGCN, self).__init__()
-        self.num_nodes = num_nodes
-        self.history_length = history_length
-        self.feature_num = feature_num
-        self.num_filters = num_filters
-        self.K = K
-        self.num_layers = num_layers
-        self.output_feature = output_feature
+        self.hidden_dim = hidden_dim
+        self.tgcn_cell = TGCNCell(hidden_dim, hidden_dim)
 
-        self.layers = nn.ModuleList()
-        self.layers.append(TGCNLayer(feature_num, num_filters, K))
-        for _ in range(1, num_layers):
-            self.layers.append(TGCNLayer(num_filters, num_filters, K))
-
-        self.regressor = nn.Linear(num_filters, output_feature)
-
-    def forward(self, g, h):
-        h = h.view(-1, self.feature_num)  # Flatten the feature matrix
-        for layer in self.layers:
-            h = layer(g, h)
-        output = self.regressor(h)
-        return output.view(self.num_nodes, -1, self.output_feature)
+    def forward(self, g, inputs):
+        # 假设inputs是(batch_size, seq_len, num_nodes, input_dim)
+        batch_size, seq_len, num_nodes, _ = inputs.shape
+        hidden_state = torch.zeros(
+            batch_size, num_nodes, self.hidden_dim, device=inputs.device
+        )
+        outputs = []
+        for t in range(seq_len):
+            hidden_state, _ = self.tgcn_cell(g, inputs[:, t, :, :], hidden_state)
+            outputs.append(hidden_state)
+        outputs = torch.stack(
+            outputs, dim=1
+        )  # (batch_size, seq_len, num_nodes, hidden_dim)
+        return outputs

@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-
-import dgl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -10,22 +8,23 @@ import json
 
 
 def load_graph(dataset: str):
-    fpath = "/home/tangyinzhou/inter_crime_pred/data/{0}/{0}.csv".format(dataset)
+    fpath = (
+        "/home/tangyinzhou/inter_crime_pred/data/{0}/{0}_community_neighbor.csv".format(
+            dataset
+        )
+    )
     i2n_path = "/home/tangyinzhou/inter_crime_pred/data/{0}/index2name.csv".format(
         dataset
     )
     edge_data = pd.read_csv(fpath)
     index2name = pd.read_csv(i2n_path)
-    src_nodes = []
-    dst_nodes = []
+    adj = np.zeros((len(index2name), len(index2name)))
     for _, row in edge_data.iterrows():
         index1 = index2name[index2name["name"] == row["Community1"]]["index"].values[0]
         index2 = index2name[index2name["name"] == row["Community2"]]["index"].values[0]
-        src_nodes.append(index1)
-        dst_nodes.append(index2)
-    g_dgl = dgl.graph((torch.tensor(src_nodes), torch.tensor(dst_nodes)))
-    g_dgl = dgl.add_self_loop(g_dgl)
-    return g_dgl
+        adj[index1, index2] = 1
+        adj[index2, index1] = 1
+    return adj
 
 
 class LLMDataset(Dataset):  # LLM输入用的Dataset，里面放的GNN的输出
