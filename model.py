@@ -39,11 +39,11 @@ class TGCNLayer(nn.Module):
     def forward(self, g, h):
         def chebyshev_polynomials(x, k):
             if k == 0:
-                return torch.ones(size=x.size(0), 1)
+                return torch.ones(size=x.size(0))
             elif k == 1:
                 return x
             else:
-                x0 = torch.ones(size=x.size(0), 1)
+                x0 = torch.ones(size=x.size(0))
                 x1 = x
                 for i in range(2, k+1):
                     x_next = 2 * x1.matmul(x) - x0

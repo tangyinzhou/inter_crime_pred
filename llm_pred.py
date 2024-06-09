@@ -7,7 +7,7 @@ def llm_area_pred_func(area_data: np.array, llm_prompt_weight):
     return 0
 
 
-def llm_pred_func(dataset, llm_prompt_weight):
+def llm_pred_func(dataset, llm_prompt_weight, G):
     dataloader = DataLoader(dataset, batch_size=1)
     llm_pred = []
     dataset_data = []
