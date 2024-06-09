@@ -28,9 +28,10 @@ def load_graph(dataset: str):
     return g_dgl
 
 
-class CustomDataset(Dataset):
-    def __init__(self, data):
+class LLMDataset(Dataset):  # LLM输入用的Dataset，里面放的GNN的输出
+    def __init__(self, data, gnn_pred):
         self.data = data
+        self.gnn_pred = gnn_pred
 
     def __len__(self):
         return len(self.data)
@@ -38,11 +39,30 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         feature = self.data[idx][:-1]
         label = self.data[idx][-1]
+        gnn_pred = self.gnn_pred[idx]
 
-        return feature, label
+        return feature, label, gnn_pred
 
 
-def build_dataset(data, start_year: int, end_year: int, history=11, pred=1):
+class GNNDataset(Dataset):  # GNN输入用的Dataset，里面存放LLM输出
+    def __init__(self, data, llm_pred):
+        self.data = data
+        self.llm_pred = llm_pred
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        feature = self.data[idx][:-1]
+        label = self.data[idx][-1]
+        llm_pred = self.llm_pred[idx]
+
+        return feature, label, llm_pred
+
+
+def build_dataset(
+    data, start_year: int, end_year: int, history=11, pred=1, cat_or_all="all"
+):
     train_data = []
     for year in range(start_year, end_year):
         for month in range(1, 13):
@@ -61,7 +81,11 @@ def build_dataset(data, start_year: int, end_year: int, history=11, pred=1):
     data_list = []
     for x in range(0, train_data.shape[0] - (history + pred)):
         data_list.append(train_data[x : x + history + pred])
-    dataset = CustomDataset(data_list)
+    if cat_or_all == "all":
+        persudo_gnn_pred = np.zeros((len(data_list), 1, data_list[0].shape[1], 1))
+    elif cat_or_all == "cat":
+        persudo_gnn_pred = np.zeros((len(data_list, 1, data_list[0].shape[1], 30)))
+    dataset = LLMDataset(data_list, persudo_gnn_pred)
     return dataset
 
 
@@ -87,7 +111,4 @@ def split_dataset(dataset: str):
     train_dataset = build_dataset(data, start_year, train_year)
     val_dataset = build_dataset(data, train_year, val_year)
     test_dataset = build_dataset(data, val_year, test_year)
-    train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=True)
-    test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=True)
-    return train_dataloader, val_dataloader, test_dataloader
+    return train_dataset, val_dataset, test_dataset
