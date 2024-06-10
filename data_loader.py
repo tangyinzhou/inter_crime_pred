@@ -104,7 +104,11 @@ def split_dataset(dataset: str):
         train_year = 2014
         val_year = 2016
         test_year = 2018
-    fpath = "/home/tangyinzhou/inter_crime_pred/data/{0}/dataset.json".format(dataset)
+    fpath = (
+        "/home/tangyinzhou/inter_crime_pred/data/{0}/dataset_normalized.json".format(
+            dataset
+        )
+    )
     with open(fpath, "r") as f:
         data = json.load(f)
     train_dataset = build_dataset(data, start_year, train_year)
@@ -113,10 +117,23 @@ def split_dataset(dataset: str):
     return train_dataset, val_dataset, test_dataset
 
 
-def get_hyperparams(use_dataset):
+def get_hyperparams(use_dataset, cat_or_all):
     if use_dataset == "CHI":
         input_dim = 31
         output_dim = 30
         hidden_dim = 64
         num_nodes = 77
+    if use_dataset == "NYC":
+        input_dim = 30
+        output_dim = 29
+        hidden_dim = 64
+        num_nodes = 262
+    if use_dataset == "SF":
+        input_dim = 37
+        output_dim = 36
+        hidden_dim = 64
+        num_nodes = 41
+    if cat_or_all == "cat":
+        input_dim = (input_dim - 1) * 2
+        output_dim = output_dim
     return input_dim, output_dim, hidden_dim, num_nodes

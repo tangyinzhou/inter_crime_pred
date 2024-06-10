@@ -8,8 +8,11 @@ adj = load_graph(dataset=use_dataset)
 input_dim, output_dim, hidden_dim, num_nodes = get_hyperparams(use_dataset)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
-_, _, test_dataset = split_dataset(dataset=use_dataset)
-
+train_dataset, val_dataset, test_dataset = split_dataset(dataset=use_dataset)
+with open("/home/tangyinzhou/inter_crime_pred/data/CHI/normalize_param.json", "r") as f:
+    normalize_param = json.load(f)
+mean = normalize_param["mean"]
+std = normalize_param["std"]
 rows, cols = np.where(adj != 0)
 edge_index = torch.from_numpy(np.vstack((rows, cols))).to(device)
 test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
@@ -43,6 +46,8 @@ with torch.no_grad():  # 在测试阶段不计算梯度
         pred_labels.append(labels)
 preds = torch.stack(preds, dim=0)
 pred_labels = torch.stack(pred_labels, dim=0)
+preds = preds * std + mean
+pred_labels = pred_labels * std + mean
 RMSE = cal_rmse(preds, pred_labels)
 print(RMSE)
 area_rmse = []
@@ -54,3 +59,4 @@ for index in range(preds.shape[2]):
         .numpy()
     )
 draw_heatmap(use_dataset, area_rmse)
+draw_temporal_fig(use_dataset, preds, pred_labels)

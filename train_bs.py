@@ -2,6 +2,7 @@ from data_loader import *
 from TGCN_model import *
 from tqdm import *
 
+
 def validate(dataloader, model, criterion):
     model.eval()  # 将模型设置为评估模式
     total_loss = 0
@@ -22,6 +23,7 @@ def validate(dataloader, model, criterion):
             loss = criterion(outputs, labels)
             total_loss += loss.item()
     return total_loss / len(dataloader)
+
 
 def test(dataloader, model, criterion):
     model.eval()  # 将模型设置为评估模式
@@ -44,6 +46,7 @@ def test(dataloader, model, criterion):
             total_loss += loss.item()
     return total_loss / len(dataloader)
 
+
 use_dataset = "CHI"
 adj = load_graph(dataset=use_dataset)
 input_dim, output_dim, hidden_dim, num_nodes = get_hyperparams(use_dataset)
@@ -65,11 +68,11 @@ model = TGCN(
     seq_len=11,
 )
 model = model.to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-5)
 criterion = nn.MSELoss()
 patience = 20  # 允许的连续没有改善的epoch数
-counter = 0    # 连续没有改善的epoch计数器
-best_loss = float('inf')  # 最佳验证损失
+counter = 0  # 连续没有改善的epoch计数器
+best_loss = float("inf")  # 最佳验证损失
 for epoch in trange(1000):  # 假设训练100个epoch
     for features, labels, _ in train_dataloader:
         model.train()
@@ -98,11 +101,13 @@ for epoch in trange(1000):  # 假设训练100个epoch
         best_loss = val_loss
         counter = 0  # 重置计数器
         # 保存最佳模型的权重
-        torch.save(model.state_dict(), '/home/tangyinzhou/inter_crime_pred/model_save/TGCN.pth')
+        torch.save(
+            model.state_dict(), "/home/tangyinzhou/inter_crime_pred/model_save/TGCN.pth"
+        )
     else:
         counter += 1
         print(f"No improvement for {counter} epochs")
-    
+
     # 如果连续没有改善的epoch数达到patience，则停止训练
     if counter >= patience:
         print(f"Early stopping after {epoch+1} epochs")
