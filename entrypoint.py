@@ -2,10 +2,14 @@ from data_loader import *
 from llm_pred import *
 from train_GNN import *
 
-adj = load_graph(dataset="CHI")
-llm_train_dataset, llm_val_dataset, llm_test_dataset = split_dataset(dataset="CHI")
 llm_prompt_weight = 0
 gnn_weight = 0
+use_dataset = "CHI"
+adj = load_graph(dataset=use_dataset)
+llm_train_dataset, llm_val_dataset, llm_test_dataset = split_dataset(
+    dataset=use_dataset
+)
+input_dim, output_dim, hidden_dim, num_nodes = get_hyperparams(use_dataset)
 for round in range(1, 101):
     if round % 10 == 0:
         llm_prompt_weight += 0.1

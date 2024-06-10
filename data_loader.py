@@ -60,7 +60,7 @@ class GNNDataset(Dataset):  # GNN输入用的Dataset，里面存放LLM输出
 
 
 def build_dataset(
-    data, start_year: int, end_year: int, history=11, pred=1, cat_or_all="all"
+    data, start_year: int, end_year: int, history=11, pred=1, cat_or_all="cat"
 ):
     train_data = []
     for year in range(start_year, end_year):
@@ -83,7 +83,7 @@ def build_dataset(
     if cat_or_all == "all":
         persudo_gnn_pred = np.zeros((len(data_list), 1, data_list[0].shape[1], 1))
     elif cat_or_all == "cat":
-        persudo_gnn_pred = np.zeros((len(data_list, 1, data_list[0].shape[1], 30)))
+        persudo_gnn_pred = np.zeros((len(data_list), 1, data_list[0].shape[1], 30))
     dataset = LLMDataset(data_list, persudo_gnn_pred)
     return dataset
 
@@ -111,3 +111,12 @@ def split_dataset(dataset: str):
     val_dataset = build_dataset(data, train_year, val_year)
     test_dataset = build_dataset(data, val_year, test_year)
     return train_dataset, val_dataset, test_dataset
+
+
+def get_hyperparams(use_dataset):
+    if use_dataset == "CHI":
+        input_dim = 31
+        output_dim = 30
+        hidden_dim = 64
+        num_nodes = 77
+    return input_dim, output_dim, hidden_dim, num_nodes
