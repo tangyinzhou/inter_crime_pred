@@ -45,3 +45,12 @@ preds = torch.stack(preds, dim=0)
 pred_labels = torch.stack(pred_labels, dim=0)
 RMSE = cal_rmse(preds, pred_labels)
 print(RMSE)
+area_rmse = []
+for index in range(preds.shape[2]):
+    area_rmse.append(
+        cal_rmse(preds[:, :, index, :], pred_labels[:, :, index, :])
+        .detach()
+        .cpu()
+        .numpy()
+    )
+draw_heatmap(use_dataset, area_rmse)
