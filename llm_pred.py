@@ -1,8 +1,9 @@
 from data_loader import *
 import numpy as np
 
-
-def llm_area_pred_func(area_data: np.array, llm_prompt_weight, gnn_pred):
+##feature_per（地区数，batch_size,历史11个月，犯罪类别）
+        #gnn_pred(地区，batch_size,GNN预测未来的1个月，犯罪类别)
+def llm_area_pred_func(area_data: np.array, llm_prompt_weight, gnn_pred, index):
     ###TODO:完善对于某个地区的LLM犯罪预测
     return 0
 
@@ -21,7 +22,7 @@ def llm_pred_func(dataset, llm_prompt_weight, adj):
         ).numpy()
         for index in range(feature_per.shape[0]):
             llm_area_pred = llm_area_pred_func(
-                feature_per[index], llm_prompt_weight, gnn_pred_per[index]
+                feature_per[index], llm_prompt_weight, gnn_pred_per[index], index
             )
             batch_preds.append(llm_area_pred)
         llm_pred.append(batch_preds)
