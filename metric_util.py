@@ -33,6 +33,10 @@ def draw_heatmap(dataset: str, errors: list):
     # 将预测误差添加到GeoDataFrame中
     # 假设errors列表的索引与GeoDataFrame中的社区ID对应
     gdf["error"] = [area_dict[i] for i in gdf["community"]]
+    # gdf.to_file(
+    #     "/home/tangyinzhou/inter_crime_pred/visulization/heatmap_data.geojson",
+    #     driver="GeoJSON",
+    # )
     gdf.plot(column="error", legend=True, cmap="OrRd")
     plt.savefig("/home/tangyinzhou/inter_crime_pred/fig_save/{0}.png".format(dataset))
 
@@ -46,6 +50,10 @@ def draw_temporal_fig(dataset: str, preds: np.array, pred_labels: np.array):
     pred_labels = np.sum(pred_labels, axis=-1)
     pred_labels = np.sum(pred_labels, axis=-1)
     pred_labels = np.sum(pred_labels, axis=-1)
+    np.save("/home/tangyinzhou/inter_crime_pred/visulization/T_GCN_preds.npy", preds)
+    np.save(
+        "/home/tangyinzhou/inter_crime_pred/visulization/ground_truth.npy", pred_labels
+    )
     x = np.arange(len(preds))
     fig, ax = plt.subplots()
     ax.plot(x, preds, label="T-GCN", marker="o")  # 使用圆圈标记数据点
