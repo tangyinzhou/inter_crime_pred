@@ -47,7 +47,7 @@ def test(dataloader, model, criterion):
     return total_loss / len(dataloader)
 
 
-use_dataset = "CHI"
+use_dataset = "SF"
 adj = load_graph(dataset=use_dataset)
 input_dim, output_dim, hidden_dim, num_nodes = get_hyperparams(use_dataset)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -102,7 +102,7 @@ for epoch in trange(1000):  # 假设训练100个epoch
         counter = 0  # 重置计数器
         # 保存最佳模型的权重
         torch.save(
-            model.state_dict(), "/home/tangyinzhou/inter_crime_pred/model_save/TGCN.pth"
+            model.state_dict(), "/home/tangyinzhou/inter_crime_pred/model_save/TGCN-SF.pth"
         )
     else:
         counter += 1

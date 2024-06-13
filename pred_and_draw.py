@@ -3,13 +3,18 @@ from TGCN_model import *
 from tqdm import *
 from metric_util import *
 
-use_dataset = "CHI"
+use_dataset = "SF"
 adj = load_graph(dataset=use_dataset)
 input_dim, output_dim, hidden_dim, num_nodes = get_hyperparams(use_dataset)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 train_dataset, val_dataset, test_dataset = split_dataset(dataset=use_dataset)
-with open("/home/tangyinzhou/inter_crime_pred/data/CHI/normalize_param.json", "r") as f:
+with open(
+    "/home/tangyinzhou/inter_crime_pred/data/{0}/normalize_param.json".format(
+        use_dataset
+    ),
+    "r",
+) as f:
     normalize_param = json.load(f)
 mean = normalize_param["mean"]
 std = normalize_param["std"]

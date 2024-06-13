@@ -8,6 +8,12 @@ import json
 
 
 def load_graph(dataset: str):
+    if dataset == "CHI":
+        data_index = "index"
+    if dataset == "NYC":
+        data_index = "area"
+    if dataset == "SF":
+        data_index = "area"
     fpath = (
         "/home/tangyinzhou/inter_crime_pred/data/{0}/{0}_community_neighbor.csv".format(
             dataset
@@ -20,8 +26,12 @@ def load_graph(dataset: str):
     index2name = pd.read_csv(i2n_path)
     adj = np.zeros((len(index2name), len(index2name)))
     for _, row in edge_data.iterrows():
-        index1 = index2name[index2name["name"] == row["Community1"]]["index"].values[0]
-        index2 = index2name[index2name["name"] == row["Community2"]]["index"].values[0]
+        index1 = index2name[index2name["name"] == row["Community1"]][data_index].values[
+            0
+        ]
+        index2 = index2name[index2name["name"] == row["Community2"]][data_index].values[
+            0
+        ]
         adj[index1, index2] = 1
         adj[index2, index1] = 1
     return adj

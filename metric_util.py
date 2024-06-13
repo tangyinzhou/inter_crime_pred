@@ -24,19 +24,23 @@ def draw_heatmap(dataset: str, errors: list):
     gdf = gpd.read_file(
         "/home/tangyinzhou/inter_crime_pred/data/{0}/community.geojson".format(dataset)
     )
-    i2n = pd.read_csv("/home/tangyinzhou/inter_crime_pred/data/CHI/index2name.csv")
+    i2n = pd.read_csv(
+        "/home/tangyinzhou/inter_crime_pred/data/{0}/index2name.csv".format(dataset)
+    )
     # 确保你的GeoJSON数据中有一个列来表示社区的ID或者名称
     # 例如：gdf['community_id']
     area_dict = {}
     for index, e in enumerate(errors):
-        area_dict[i2n[i2n["index"] == index]["name"].values[0]] = float(e)
+        area_dict[i2n[i2n["area"] == index]["name"].values[0]] = float(e)
     # 将预测误差添加到GeoDataFrame中
     # 假设errors列表的索引与GeoDataFrame中的社区ID对应
-    gdf["error"] = [area_dict[i] for i in gdf["community"]]
-    # gdf.to_file(
-    #     "/home/tangyinzhou/inter_crime_pred/visulization/heatmap_data.geojson",
-    #     driver="GeoJSON",
-    # )
+    gdf["error"] = [area_dict[i] for i in gdf["nhood"]]
+    gdf.to_file(
+        "/home/tangyinzhou/inter_crime_pred/visulization/heatmap_data_{0}.geojson".format(
+            dataset
+        ),
+        driver="GeoJSON",
+    )
     gdf.plot(column="error", legend=True, cmap="OrRd")
     plt.savefig("/home/tangyinzhou/inter_crime_pred/fig_save/{0}.png".format(dataset))
 
@@ -50,9 +54,17 @@ def draw_temporal_fig(dataset: str, preds: np.array, pred_labels: np.array):
     pred_labels = np.sum(pred_labels, axis=-1)
     pred_labels = np.sum(pred_labels, axis=-1)
     pred_labels = np.sum(pred_labels, axis=-1)
-    np.save("/home/tangyinzhou/inter_crime_pred/visulization/T_GCN_preds.npy", preds)
     np.save(
-        "/home/tangyinzhou/inter_crime_pred/visulization/ground_truth.npy", pred_labels
+        "/home/tangyinzhou/inter_crime_pred/visulization/T_GCN_preds_{0}.npy".format(
+            dataset
+        ),
+        preds,
+    )
+    np.save(
+        "/home/tangyinzhou/inter_crime_pred/visulization/ground_truth_{0}.npy".format(
+            dataset
+        ),
+        pred_labels,
     )
     x = np.arange(len(preds))
     fig, ax = plt.subplots()
