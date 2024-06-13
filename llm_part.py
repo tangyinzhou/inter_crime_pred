@@ -17,33 +17,8 @@ def get_agent_action_simple(session, model_name="gpt-3.5",temperature=1.0, max_t
         model_name = model_name_map[model_name]
         client = OpenAI(
             http_client=httpx.Client(proxy="http://127.0.0.1:10190"),
-            api_key='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'
+            api_key=''
         )
-        
-    elif "meta-llama" in model_name or "mistralai" in model_name:
-        client = OpenAI(
-            base_url="https://api.deepinfra.com/v1/openai",
-            api_key="DMtmh2gv9CgObKohHmb7iVxgXSonNAj6",
-            http_client=httpx.Client(proxies="http://127.0.0.1:10190"),
-        )
-    elif "deepseek-chat" in model_name:
-        client = OpenAI(
-            api_key="sk-97d864b57efb45cd8c430603dea4580a",
-            base_url="https://api.deepseek.com/v1"
-        )
-    else:
-        model_name, port = model_name.split(":")
-        if args.infer_server == "LLM2-vllm":
-            client = OpenAI(
-                base_url="http://101.6.69.35:{}/v1".format(port),
-                api_key="token-fiblab-20240425"
-            )
-        elif args.infer_server == "DL4-vllm":
-            client = OpenAI(
-                base_url="http://101.6.69.111:{}/v1".format(port),
-                api_key="token-fiblab-20240425"
-            )
-
     MAX_RETRIES = 1
     WAIT_TIME = 1
     for i in range(MAX_RETRIES):
