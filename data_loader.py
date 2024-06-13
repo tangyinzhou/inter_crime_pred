@@ -91,9 +91,15 @@ def build_dataset(
     for x in range(0, train_data.shape[0] - (history + pred)):
         data_list.append(train_data[x : x + history + pred])
     if cat_or_all == "all":
-        persudo_gnn_pred = np.zeros((len(data_list), 1, data_list[0].shape[1], 1))
+        # persudo_gnn_pred = np.zeros((len(data_list), 1, data_list[0].shape[1], 1))
+        persudo_gnn_pred = np.random.uniform(
+            low=-1, high=1, size=(len(data_list), 1, data_list[0].shape[1], 1)
+        )
     elif cat_or_all == "cat":
-        persudo_gnn_pred = np.zeros((len(data_list), 1, data_list[0].shape[1], 30))
+        # persudo_gnn_pred = np.zeros((len(data_list), 1, data_list[0].shape[1], 30))
+        persudo_gnn_pred = np.random.uniform(
+            low=-1, high=1, size=(len(data_list), 1, data_list[0].shape[1], 30)
+        )
     dataset = LLMDataset(data_list, persudo_gnn_pred)
     return dataset
 
@@ -119,6 +125,7 @@ def split_dataset(dataset: str):
             dataset
         )
     )
+    # fpath = "/home/tangyinzhou/inter_crime_pred/data/{0}/dataset.json".format(dataset)
     with open(fpath, "r") as f:
         data = json.load(f)
     train_dataset = build_dataset(data, start_year, train_year)
