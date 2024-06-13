@@ -4,7 +4,11 @@ from train_GNN import *
 
 llm_prompt_weight = 0
 gnn_weight = 0
-use_dataset = "CHI"
+use_dataset = "CHI"  #可选"CHI","NYC", "SF"
+year = "2016"   #可选"2016","2017","2018","2019","2020"
+openai_key = ""   #YOUR OPENAI KEY HERE
+with open("./data/community_feature_dict.json", "r") as f:
+    city_dict = json.load(f)
 adj = load_graph(dataset=use_dataset)
 llm_train_dataset, llm_val_dataset, llm_test_dataset = split_dataset(
     dataset=use_dataset
