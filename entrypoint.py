@@ -7,7 +7,7 @@ gnn_weight = 0
 use_dataset = "CHI"  # 可选"CHI","NYC", "SF"
 year = "2016"  # 可选"2016","2017","2018","2019","2020"
 openai_key = (
-    "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"  # YOUR OPENAI KEY HERE
+    # YOUR OPENAI KEY HERE
 )
 with open(
     "/home/tangyinzhou/inter_crime_pred/data/community_feature_dict.json", "r"
