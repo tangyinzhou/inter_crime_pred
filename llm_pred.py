@@ -20,7 +20,7 @@ def llm_pred_func(
     llm_pred = []
     dataset_data = []
     with open(
-        "/home/tangyinzhou/inter_crime_pred/data/{0}/normalize_param.json".format(
+        "./data/{0}/normalize_param.json".format(
             use_dataset
         ),
         "r",

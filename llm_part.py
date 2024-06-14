@@ -7,8 +7,12 @@ import numpy as np
 import pandas as pd
 from util import process_ser
 
-os.environ["http_proxy"] = "http://localhost:7890"
-os.environ["https_proxy"] = "http://localhost:7890"
+# os.environ["http_proxy"] = "http://localhost:7890"
+# os.environ["https_proxy"] = "http://localhost:7890"
+
+os.environ["http_proxy"] = "http://127.0.0.1:10190"
+os.environ["https_proxy"] = "http://127.0.0.1:10190"
+
 
 
 def get_agent_action_simple(
@@ -53,7 +57,7 @@ def get_prompt_area(
 ):
     # feature_per[index], llm_prompt_weight, gnn_pred_per[index]
     community_name = pd.read_csv(
-        "/home/tangyinzhou/inter_crime_pred/data/{0}/index2name.csv".format(use_dataset)
+        "./data/{0}/index2name.csv".format(use_dataset)
     )
     community_dict = {}
     for index, row in community_name.iterrows():
@@ -65,17 +69,16 @@ def get_prompt_area(
     crime_data_list = list(crime_data)
     crime_data_proc = [process_ser(crime_item) for crime_item in crime_data_list]
     weight_dict = {
-        0: "not at all",
-        0.1: "hardly",
-        0.2: "rarely",
-        0.3: "seldom",
-        0.4: "slightly",
-        0.5: "moderately",
-        0.6: "fairly",
-        0.7: "quite",
-        0.8: "very",
-        0.9: "extremely",
-        1: "completely",
+        0: "Please disregard the TGNN prediction entirely",
+        0.1: "Please barely take into account the TGNN prediction",
+        0.2: "Please minimally consider the TGNN prediction",
+        0.3: "Please slightly consider the TGNN prediction",
+        0.4: "Please give some consideration to the TGNN prediction",
+        0.5: "Please moderately consider the TGNN prediction",
+        0.6: "Please largely consider the TGNN prediction",
+        0.7: "Please significantly consider the TGNN prediction",
+        0.8: "Please highly consider the TGNN prediction",
+        0.9: "Please fully consider the TGNN prediction",
     }
     degree = weight_dict[llm_prompt_weight]
     if city == "CHI":
@@ -190,7 +193,7 @@ def get_prompt_area(
     gnn_pred_type = str({key: value for key, value in zip(crime_list, gnn_pred)})
     prompt_head = f"The crime counts of each kind of crime in past 11 months of {community} are as follows:\n{gnn_pred_type_his}"
     prompt_tail = f"""I will give you the T-GCN prediction of crime count of each kind of crime in next month of {community}.
-    Please consider the TGNN prediction {degree}, and give the prediction of crime count of each kind of crime
+    {degree}, consider the crime counts of each kind of crime in past 11 months of {community} and features of {community}, and give the prediction of crime count of each kind of crime
     in next month of {community} without producing any additional text. Do not say anything like 'The predicted crime count for {community} for the next month is:', 
     just return a list of length {list_length},each value represents for a prediction of count for a certain crime type.The order of the crime types is the same as the TGNN prediction output:[the prediction count for {crime_list[0]},the prediction count for {crime_list[1]},...,the prediction count for {crime_list[-1]}].
     \n The prediction of TGCN:{gnn_pred_type}\nYour prediction:\n
