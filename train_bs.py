@@ -1,5 +1,5 @@
 from data_loader import *
-from TGCN_model import *
+from EchoCrime_model import *
 from tqdm import *
 
 
@@ -60,7 +60,7 @@ train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=True)
 test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=True)
 # model = GCN(in_feats=31 * 11, hidden_size=64, out_feats=30)
-model = TGCN(
+model = GNN_module(
     input_dim=input_dim - 1,
     hidden_dim=hidden_dim,
     output_dim=output_dim,
@@ -74,7 +74,7 @@ patience = 20  # 允许的连续没有改善的epoch数
 counter = 0  # 连续没有改善的epoch计数器
 best_loss = float("inf")  # 最佳验证损失
 for epoch in trange(1000):  # 假设训练100个epoch
-    for features, labels, _ in train_dataloader:
+    for features, labels, gnn_pred in train_dataloader:
         model.train()
         features = torch.FloatTensor(features.float()).to(device)
         labels = torch.FloatTensor(labels.float()).to(device)
@@ -102,7 +102,8 @@ for epoch in trange(1000):  # 假设训练100个epoch
         counter = 0  # 重置计数器
         # 保存最佳模型的权重
         torch.save(
-            model.state_dict(), "/home/tangyinzhou/inter_crime_pred/model_save/TGCN-SF.pth"
+            model.state_dict(),
+            "/home/tangyinzhou/inter_crime_pred/model_save/TGCN-SF.pth",
         )
     else:
         counter += 1
