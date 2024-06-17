@@ -2,10 +2,6 @@ import numpy as np
 from functools import partial
 from dataclasses import dataclass
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/llm_pred
 @dataclass
 class SerializerSettings:
     """
@@ -24,25 +20,11 @@ class SerializerSettings:
     - half_bin_correction (bool): If True, applies half bin correction during deserialization. Default is True.
     - decimal_point (str): String representation for the decimal point.
     """
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/llm_pred
     base: int = 10
     prec: int = 3
     signed: bool = True
     fixed_length: bool = False
     max_val: float = 1e7
-<<<<<<< HEAD
-    time_sep: str = " ,"
-    bit_sep: str = " "
-    plus_sign: str = ""
-    minus_sign: str = " -"
-    half_bin_correction: bool = True
-    decimal_point: str = ""
-    missing_str: str = " Nan"
-
-=======
     time_sep: str = ' ,'
     bit_sep: str = ' '
     plus_sign: str = ''
@@ -50,7 +32,6 @@ class SerializerSettings:
     half_bin_correction: bool = True
     decimal_point: str = ''
     missing_str: str = ' Nan'
->>>>>>> origin/llm_pred
 
 @dataclass
 class Scaler:
@@ -61,17 +42,9 @@ class Scaler:
         transform (callable): Function to apply transformation.
         inv_transform (callable): Function to apply inverse transformation.
     """
-<<<<<<< HEAD
-
     transform: callable = lambda x: x
     inv_transform: callable = lambda x: x
 
-
-=======
-    transform: callable = lambda x: x
-    inv_transform: callable = lambda x: x
-
->>>>>>> origin/llm_pred
 # scaler = get_scaler(train.values, alpha=0.95, beta=0.3, basic=False)
 def get_scaler(history, alpha=0.3, beta=0.3, basic=True):
     """
@@ -88,33 +61,6 @@ def get_scaler(history, alpha=0.3, beta=0.3, basic=True):
     Returns:
         Scaler: Configured scaler object.
     """
-<<<<<<< HEAD
-    history = history[~np.isnan(history)]  # 只保留非Nan元素
-    if basic:
-        q = np.maximum(np.quantile(np.abs(history), alpha), 0.01)
-
-        def transform(x):
-            return x / q
-
-        def inv_transform(x):
-            return x * q
-
-    else:
-        min_ = np.min(history) - beta * (np.max(history) - np.min(history))
-        q = np.quantile(history - min_, alpha)
-        if q == 0:
-            q = 1
-
-        def transform(x):
-            return (x - min_) / q
-
-        def inv_transform(x):
-            return x * q + min_
-
-    return Scaler(transform=transform, inv_transform=inv_transform)
-
-
-=======
     history = history[~np.isnan(history)]   #只保留非Nan元素
     if basic:
         q = np.maximum(np.quantile(np.abs(history), alpha),.01)
@@ -133,7 +79,6 @@ def get_scaler(history, alpha=0.3, beta=0.3, basic=True):
             return x * q + min_
     return Scaler(transform=transform, inv_transform=inv_transform)
 
->>>>>>> origin/llm_pred
 def vec_num2repr(val, base, prec, max_val):
     """
     Convert numbers to a representation in a specified base with precision.
@@ -146,11 +91,7 @@ def vec_num2repr(val, base, prec, max_val):
 
     Returns:
     - tuple: Sign and digits in the specified base representation.
-<<<<<<< HEAD
-
-=======
     
->>>>>>> origin/llm_pred
     Examples:
         With base=10, prec=2:
             0.5   ->    50
@@ -165,30 +106,18 @@ def vec_num2repr(val, base, prec, max_val):
 
     before_decimals = []
     for i in range(max_bit_pos):
-<<<<<<< HEAD
-        digit = (val / base ** (max_bit_pos - i - 1)).astype(int)
-        before_decimals.append(digit)
-        val -= digit * base ** (max_bit_pos - i - 1)
-=======
         digit = (val / base**(max_bit_pos - i - 1)).astype(int)
         before_decimals.append(digit)
         val -= digit * base**(max_bit_pos - i - 1)
->>>>>>> origin/llm_pred
 
     before_decimals = np.stack(before_decimals, axis=-1)
 
     if prec > 0:
         after_decimals = []
         for i in range(prec):
-<<<<<<< HEAD
-            digit = (val / base ** (-i - 1)).astype(int)
-            after_decimals.append(digit)
-            val -= digit * base ** (-i - 1)
-=======
             digit = (val / base**(-i - 1)).astype(int)
             after_decimals.append(digit)
             val -= digit * base**(-i - 1)
->>>>>>> origin/llm_pred
 
         after_decimals = np.stack(after_decimals, axis=-1)
         digits = np.concatenate([before_decimals, after_decimals], axis=-1)
@@ -196,10 +125,6 @@ def vec_num2repr(val, base, prec, max_val):
         digits = before_decimals
     return sign, digits
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/llm_pred
 def serialize_arr(arr, settings: SerializerSettings):
     """
     Serialize an array of numbers (a time series) into a string based on the provided settings.
@@ -212,46 +137,6 @@ def serialize_arr(arr, settings: SerializerSettings):
     - str: String representation of the array.
     """
     # max_val is only for fixing the number of bits in nunm2repr so it can be vmapped
-<<<<<<< HEAD
-    assert np.all(
-        np.abs(arr[~np.isnan(arr)]) <= settings.max_val
-    ), f"abs(arr) must be <= max_val,\
-         but abs(arr)={np.abs(arr)}, max_val={settings.max_val}"
-
-    if not settings.signed:
-        assert np.all(arr[~np.isnan(arr)] >= 0), f"unsigned arr must be >= 0"
-        plus_sign = minus_sign = ""
-    else:
-        plus_sign = settings.plus_sign
-        minus_sign = settings.minus_sign
-
-    vnum2repr = partial(
-        vec_num2repr, base=settings.base, prec=settings.prec, max_val=settings.max_val
-    )
-    sign_arr, digits_arr = vnum2repr(np.where(np.isnan(arr), np.zeros_like(arr), arr))
-    ismissing = np.isnan(arr)
-
-    def tokenize(arr):
-        return "".join([settings.bit_sep + str(b) for b in arr])
-
-    bit_strs = []
-    for sign, digits, missing in zip(sign_arr, digits_arr, ismissing):
-        if not settings.fixed_length:
-            # remove leading zeros
-            nonzero_indices = np.where(digits != 0)[0]
-            if len(nonzero_indices) == 0:
-                digits = np.array([0])
-            else:
-                digits = digits[nonzero_indices[0] :]
-            # add a decimal point
-            prec = settings.prec
-            if len(settings.decimal_point):
-                digits = np.concatenate(
-                    [digits[:-prec], np.array([settings.decimal_point]), digits[-prec:]]
-                )
-        digits = tokenize(digits)
-        sign_sep = plus_sign if sign == 1 else minus_sign
-=======
     assert np.all(np.abs(arr[~np.isnan(arr)]) <= settings.max_val), f"abs(arr) must be <= max_val,\
          but abs(arr)={np.abs(arr)}, max_val={settings.max_val}"
     
@@ -284,30 +169,11 @@ def serialize_arr(arr, settings: SerializerSettings):
                 digits = np.concatenate([digits[:-prec], np.array([settings.decimal_point]), digits[-prec:]])
         digits = tokenize(digits)
         sign_sep = plus_sign if sign==1 else minus_sign
->>>>>>> origin/llm_pred
         if missing:
             bit_strs.append(settings.missing_str)
         else:
             bit_strs.append(sign_sep + digits)
     bit_str = settings.time_sep.join(bit_strs)
-<<<<<<< HEAD
-    bit_str += (
-        settings.time_sep
-    )  # otherwise there is ambiguity in number of digits in the last time step
-    return bit_str
-
-
-def process_ser(input_arr):
-    # 转换、序列化、截断输入数组
-    # transform input_arrs
-    transformed_input_arr = np.array(
-        get_scaler(input_arr, alpha=0.3, beta=0.3, basic=True).transform(input_arr)
-    )
-    # serialize input_arrs
-    settings = SerializerSettings(
-        base=10, prec=3, signed=True, half_bin_correction=True
-    )
-=======
     bit_str += settings.time_sep # otherwise there is ambiguity in number of digits in the last time step
     return bit_str
 
@@ -317,7 +183,26 @@ def process_ser(input_arr):
     transformed_input_arr = np.array(get_scaler(input_arr, alpha=0.3, beta=0.3, basic=True).transform(input_arr))
     # serialize input_arrs
     settings = SerializerSettings(base=10, prec=3, signed=True, half_bin_correction=True)
->>>>>>> origin/llm_pred
     output_str = serialize_arr(transformed_input_arr, settings)
     # Truncate input_arrs to fit the maximum context length
     return output_str
+
+def addtoken(num):
+    with open("/home/tangyinzhou/gpt-token.txt", "r") as f: 
+        data = f.read() 
+        nownum = int(data)        
+        
+    if num == -1:
+        print('no gpt file!')
+        nownum = 0
+    else:
+        nownum = nownum + num
+    
+    with open("/home/tangyinzhou/gpt-token.txt","w+") as f:
+        f.write(str(nownum)) 
+        
+
+def read_openai_key():
+    with open("/home/tangyinzhou/openai_key.txt", "r") as f: 
+        openai_key = f.read() 
+    return openai_key

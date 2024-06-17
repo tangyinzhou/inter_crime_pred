@@ -2,12 +2,13 @@ from data_loader import *
 from llm_pred import *
 from train_GNN import *
 import os
+from util import *
 
-llm_prompt_weight = 0.9   # 可选0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9
+llm_prompt_weight = 0   # 可选0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9
 gnn_weight = 0
 use_dataset = "CHI"  # 可选"CHI","NYC", "SF"
 year = "2016"  # 可选"2016","2017","2018","2019","2020"
-openai_key = ""
+openai_key = read_openai_key()
 
 with open(
     "./data/community_feature_dict.json", "r"

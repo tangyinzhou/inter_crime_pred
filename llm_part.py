@@ -5,7 +5,7 @@ import time
 import httpx
 import numpy as np
 import pandas as pd
-from util import process_ser
+from util import *
 
 
 os.environ["http_proxy"] = "http://localhost:7890"
@@ -68,16 +68,16 @@ def get_prompt_area(
     crime_data_list = list(crime_data)
     crime_data_proc = [process_ser(crime_item) for crime_item in crime_data_list]
     weight_dict = {
-        0: "Please disregard the TGNN prediction entirely",
-        0.1: "Please barely take into account the TGNN prediction",
-        0.2: "Please minimally consider the TGNN prediction",
-        0.3: "Please slightly consider the TGNN prediction",
-        0.4: "Please give some consideration to the TGNN prediction",
-        0.5: "Please moderately consider the TGNN prediction",
-        0.6: "Please largely consider the TGNN prediction",
-        0.7: "Please significantly consider the TGNN prediction",
-        0.8: "Please highly consider the TGNN prediction",
-        0.9: "Please fully consider the TGNN prediction",
+        0: "Please disregard the T-GCN prediction entirely",
+        0.1: "Please barely take into account the T-GCN prediction",
+        0.2: "Please minimally consider the T-GCN prediction",
+        0.3: "Please slightly consider the T-GCN prediction",
+        0.4: "Please give some consideration to the T-GCN prediction",
+        0.5: "Please moderately consider the T-GCN prediction",
+        0.6: "Please largely consider the T-GCN prediction",
+        0.7: "Please significantly consider the T-GCN prediction",
+        0.8: "Please highly consider the T-GCN prediction",
+        0.9: "Please fully consider the T-GCN prediction",
     }
     degree = weight_dict[llm_prompt_weight]
     if city == "CHI":
@@ -194,8 +194,8 @@ def get_prompt_area(
     prompt_tail = f"""I will give you the T-GCN prediction of crime count of each kind of crime in next month of {community}.
     {degree}, consider the crime counts of each kind of crime in past 11 months of {community} and features of {community}, and give the prediction of crime count of each kind of crime
     in next month of {community} without producing any additional text. Do not say anything like 'The predicted crime count for {community} for the next month is:', 
-    just return a list of length {list_length},each value represents for a prediction of count for a certain crime type.The order of the crime types is the same as the TGNN prediction output:[the prediction count for {crime_list[0]},the prediction count for {crime_list[1]},...,the prediction count for {crime_list[-1]}].
-    \n The prediction of TGCN:{gnn_pred_type}\nYour prediction:\n
+    just return a list of length {list_length},each value represents for a prediction of count for a certain crime type.The order of the crime types is the same as the T-GCN prediction output:[the prediction count for {crime_list[0]},the prediction count for {crime_list[1]},...,the prediction count for {crime_list[-1]}].
+    \n The prediction of T-GCN:{gnn_pred_type}\nYour prediction:\n
     """
 
     total_population = city_dict[city][year][community]["total_population"]
@@ -222,6 +222,7 @@ def get_prompt_area(
 
 def extract_output(output):
     ###TODO:依据测试输出填写处理输出的函数
+    output = eval(output)
     return output
 
 
@@ -256,7 +257,7 @@ def llm_area_pred_func(
             {
                 "role": "system",
                 "content": "you are a helpful assistant that performs crime prediction of each community you arrive.The user will provide the description of the community, crime counts of each kind of crime in past 11 months,\
-                            TGNN prediction of crime counts for each kind of crime in next month.You will predict the crime counts for each kind of crime in next month.You should consider the ",
+                            T-GCN prediction of crime counts for each kind of crime in next month.You will predict the crime counts for each kind of crime in next month.You should consider the ",
             },
             {"role": "user", "content": prompt},
         ],
@@ -265,5 +266,7 @@ def llm_area_pred_func(
         max_tokens=200,
         OPENAI_KEY=openai_key,
     )
+    addtoken(len(prompt.split()))
+    addtoken(len(output.split()))
     result = extract_output(output)
     return result
