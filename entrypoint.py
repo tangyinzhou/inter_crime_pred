@@ -33,21 +33,22 @@ for round in range(1, 51):
         llm_prompt_weight += 0.2
         gnn_weight += 0.2
 
-    # gnn_train_dataset = llm_pred_func(
-    #     use_dataset,
-    #     llm_train_dataset,
-    #     llm_prompt_weight,
-    #     adj,
-    #     use_dataset,
-    #     year,
-    #     city_dict,
-    #     openai_key,
-    # )
-    # with open('./data/dataset/gnn_train_dataset.pkl', 'wb') as f:
-    #     pkl.dump((gnn_train_dataset.data, gnn_train_dataset.llm_pred), f)
-    with open('./data/dataset/gnn_train_dataset.pkl', 'rb') as f:
-        data, llm_preds = pkl.load(f)
-    gnn_train_dataset = GNNDataset(data, llm_preds)
+    gnn_train_dataset = llm_pred_func(
+        use_dataset,
+        llm_train_dataset,
+        llm_prompt_weight,
+        adj,
+        use_dataset,
+        year,
+        city_dict,
+        openai_key,
+    )
+    with open('./data/dataset/gnn_train_dataset.pkl', 'wb') as f:
+        pkl.dump((gnn_train_dataset.data, gnn_train_dataset.llm_pred), f)
+    exit(0)
+    # with open('./data/dataset/gnn_train_dataset.pkl', 'rb') as f:
+    #     data, llm_preds = pkl.load(f)
+    # gnn_train_dataset = GNNDataset(data, llm_preds)
 
     # gnn_val_dataset = llm_pred_func(
     #     use_dataset,

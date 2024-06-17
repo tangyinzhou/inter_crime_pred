@@ -49,8 +49,9 @@ class LLMDataset(Dataset):  # LLM输入用的Dataset，里面放的GNN的输出
         feature = self.data[idx][:-1]
         label = self.data[idx][-1]
         gnn_pred = self.gnn_pred[idx]
+        idx = idx
 
-        return feature, label, gnn_pred
+        return feature, label, gnn_pred, idx
 
 
 class GNNDataset(Dataset):  # GNN输入用的Dataset，里面存放LLM输出
@@ -65,8 +66,8 @@ class GNNDataset(Dataset):  # GNN输入用的Dataset，里面存放LLM输出
         feature = self.data[idx][:-1]
         label = self.data[idx][-1]
         llm_pred = self.llm_pred[idx]
-
-        return feature, label, llm_pred
+        idx = idx
+        return feature, label, llm_pred, idx
 
 
 def build_dataset(
@@ -107,7 +108,8 @@ def build_dataset(
 def split_dataset(dataset: str):
     if dataset == "CHI":
         start_year = 2001
-        train_year = 2012
+        # train_year = 2012 测试，后面改回去
+        train_year = 2003
         val_year = 2016
         test_year = 2020
     elif dataset == "NYC":
