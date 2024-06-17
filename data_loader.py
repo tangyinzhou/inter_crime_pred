@@ -15,11 +15,11 @@ def load_graph(dataset: str):
     if dataset == "SF":
         data_index = "area"
     fpath = (
-        "/home/tangyinzhou/inter_crime_pred/data/{0}/{0}_community_neighbor.csv".format(
+        "./data/{0}/{0}_community_neighbor.csv".format(
             dataset
         )
     )
-    i2n_path = "/home/tangyinzhou/inter_crime_pred/data/{0}/index2name.csv".format(
+    i2n_path = "./data/{0}/index2name.csv".format(
         dataset
     )
     edge_data = pd.read_csv(fpath)
@@ -121,7 +121,7 @@ def split_dataset(dataset: str):
         val_year = 2016
         test_year = 2018
     fpath = (
-        "/home/tangyinzhou/inter_crime_pred/data/{0}/dataset_normalized.json".format(
+        "./data/{0}/dataset_normalized.json".format(
             dataset
         )
     )
