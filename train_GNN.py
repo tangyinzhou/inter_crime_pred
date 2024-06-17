@@ -40,7 +40,7 @@ def train_GNN(
         output_dim=hyper_params["output_dim"],
         num_nodes=adj.shape[0],
         seq_len=11,
-    )
+    ).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
     criterion = nn.MSELoss()
     patience = 20  # 允许的连续没有改善的epoch数
@@ -48,6 +48,7 @@ def train_GNN(
     best_loss = float("inf")  # 最佳验证损失
     for epoch in range(1000):  # 假设训练100个epoch
         for features, labels, llm_pred in train_dataloader:
+            edge_index = edge_index.to(device)
             features = torch.FloatTensor(features.float()).to(device)
             labels = torch.FloatTensor(labels.float()).to(device)
             llm_pred = torch.FloatTensor(llm_pred.float()).to(device)
@@ -69,10 +70,8 @@ def train_GNN(
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
-        print(f"Epoch {epoch+1}, Loss: {loss.item()}")
         print(f"Epoch {epoch}, Loss: {loss.item()}")
-        val_loss = validate(val_dataloader, model, criterion, 1, edge_index)
+        val_loss = validate(val_dataloader, model, criterion)
         print(f"Epoch {epoch}, Val Loss: {val_loss}")
         if val_loss < best_loss:
             best_loss = val_loss
@@ -80,13 +79,13 @@ def train_GNN(
             # 保存最佳模型的权重
             torch.save(
                 model.state_dict(),
-                "/home/tangyinzhou/inter_crime_pred/model_save/LLM_TGCN.pth",
+                "/home/tangyinzhou/inter_crime_pred/model_save/EchoCrime_{0}_round_{1}.pth".format(
+                    "CHI", "1"
+                ),
             )
         else:
             counter += 1
             print(f"No improvement for {counter} epochs")
-
-        # 如果连续没有改善的epoch数达到patience，则停止训练
         if counter >= patience:
             print(f"Early stopping after {epoch+1} epochs")
             break

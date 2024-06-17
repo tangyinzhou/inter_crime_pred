@@ -45,7 +45,6 @@ class TGCN(torch.nn.Module):
 
             # 存储当前时间步的输出
             seq_outputs.append(h)
-
         # 取最后一个时间步的输出
         last_output = seq_outputs[-1]
 

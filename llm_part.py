@@ -222,7 +222,15 @@ def get_prompt_area(
 
 def extract_output(output):
     ###TODO:依据测试输出填写处理输出的函数
-    output = eval(output)
+    try:
+        output = eval(output)
+        output = [x if x > 0 else 0 for x in output]
+        if not len(output)==30:
+            output = [0 for _ in range(30)]
+            print("is list but not 30")
+    except:
+        output = [0 for _ in range(30)]
+        print("not list")
     return output
 
 

@@ -134,7 +134,7 @@ def split_dataset(dataset: str):
     return train_dataset, val_dataset, test_dataset
 
 
-def get_hyperparams(use_dataset, cat_or_all="all"):
+def get_hyperparams(use_dataset, cat_or_all="cat"):
     if use_dataset == "CHI":
         input_dim = 31
         output_dim = 30

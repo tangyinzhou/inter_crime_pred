@@ -190,13 +190,13 @@ def process_ser(input_arr):
 def addtoken(num):
     with open("/home/tangyinzhou/gpt-token.txt", "r") as f: 
         data = f.read() 
-        nownum = int(data)        
+        nownum = float(data)        
         
     if num == -1:
         print('no gpt file!')
         nownum = 0
     else:
-        nownum = nownum + num
+        nownum = nownum + num*1e-6
     
     with open("/home/tangyinzhou/gpt-token.txt","w+") as f:
         f.write(str(nownum)) 
