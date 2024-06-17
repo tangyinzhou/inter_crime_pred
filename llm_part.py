@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from util import process_ser
 
+
 os.environ["http_proxy"] = "http://localhost:7890"
 os.environ["https_proxy"] = "http://localhost:7890"
 
@@ -18,6 +19,7 @@ def get_agent_action_simple(
     max_tokens=200,
     OPENAI_KEY="",
 ):
+
     # 模型API设置
     if "gpt-3.5" in model_name or "gpt-4" in model_name:
         model_name_map = {
@@ -30,6 +32,7 @@ def get_agent_action_simple(
         # )
         client = OpenAI(api_key=OPENAI_KEY)
     MAX_RETRIES = 5
+
     WAIT_TIME = 1
     for i in range(MAX_RETRIES):
         try:
