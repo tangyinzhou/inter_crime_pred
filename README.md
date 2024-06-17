@@ -1,9 +1,9 @@
 # EchoCrime
 
-Introduction
+The Pytorch implementation of EchoCrime.
 
 ## Dataset
-You can generate the dataset by running the files in folder ``generate_dataset`` by the labeling.
+We upload all the dataset we use and their peocessing code in folder ```data```.
 
 ## Our Model
-You can make predictions with the program in folder ``prediction``.
+You can train and use our model to predict by ```python entrypoint.py```
